@@ -7,7 +7,7 @@ namespace SojaExiles
 {
     public class PlayerMovement : MonoBehaviour
     {
-
+        public DialogueSystem dialogueSystem;
         public CharacterController controller;
 
         public float speed = 5f;
@@ -15,11 +15,13 @@ namespace SojaExiles
 
         Vector3 velocity;
 
-        bool isGrounded;
-
         // Update is called once per frame
         void Update()
         {
+
+            if (dialogueSystem.IsDialogueActive) {
+                return;
+            }
 
             float x = Input.GetAxis("Horizontal");
             float z = Input.GetAxis("Vertical");

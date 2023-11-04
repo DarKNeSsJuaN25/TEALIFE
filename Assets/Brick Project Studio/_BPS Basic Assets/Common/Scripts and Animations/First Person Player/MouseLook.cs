@@ -9,6 +9,7 @@ namespace SojaExiles
     {
 
         public float mouseXSensitivity = 100f;
+        public DialogueSystem dialogueSystem;
 
         public Transform playerBody;
 
@@ -23,6 +24,7 @@ namespace SojaExiles
         // Update is called once per frame
         void Update()
         {
+            if (dialogueSystem.IsDialogueActive) { return; }
             float mouseX = Input.GetAxis("Mouse X") * mouseXSensitivity * Time.deltaTime;
             float mouseY = Input.GetAxis("Mouse Y") * mouseXSensitivity * Time.deltaTime;
 
