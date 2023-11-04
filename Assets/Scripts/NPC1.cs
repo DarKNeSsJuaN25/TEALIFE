@@ -14,28 +14,17 @@ public class NPC1 : MonoBehaviour
     private float firstWalkDuration = 4.8f; // Duración del primer paseo
     private bool hasTurnedOnce = false;
     private bool hasTurned180 = false;
-<<<<<<< HEAD
-    private Transform player;
-    private float firstWalkDuration = 4.8f; // Duración del primer paseo
-    public GameObject cubeCollider;
-=======
 
->>>>>>> 8e220f7ef2af6657500e3ca2aee6f274341c941c
     void Start()
     {
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
-<<<<<<< HEAD
-        cubeCollider.GetComponent<MeshRenderer>().enabled = false; // Deshabilita el Mesh Renderer al inicio
-
-=======
         dialogueSystem.OnDialogueComplete += StartWalking; // Suscribe al evento del sistema de diálogo
     }
 
     void OnDestroy()
     {
         dialogueSystem.OnDialogueComplete -= StartWalking; // Desuscribe para evitar referencias nulas
->>>>>>> 8e220f7ef2af6657500e3ca2aee6f274341c941c
     }
 
     void Update()
@@ -50,6 +39,8 @@ public class NPC1 : MonoBehaviour
         // Actualiza el movimiento si María está caminando
         if (isWalking)
         {
+            animator.SetBool("isWalking", true); // Activa la animación de caminata
+
             // Aquí es donde María se moverá si la bandera isWalking es verdadera
             transform.Translate(Vector3.forward * walkSpeed * Time.deltaTime);
         }
@@ -62,7 +53,6 @@ public class NPC1 : MonoBehaviour
         {
             transform.Rotate(0, 90, 0);
             hasStartedWalking = true;
-            animator.SetBool("isWalking", true); // Activa la animación de caminata
             isWalking = true; // Permite que el NPC se mueva en Update
             // Puedes agregar aquí cualquier inicialización adicional para el movimiento o comportamiento de María
             Invoke("TurnRight", firstWalkDuration / 2);
@@ -101,7 +91,6 @@ public class NPC1 : MonoBehaviour
 
         // Desactiva la animación de caminata en el Animator
         animator.SetBool("isWalking", false);
-        cubeCollider.GetComponent<MeshRenderer>().enabled = true;
     }
 
     void ContinueWalking()
