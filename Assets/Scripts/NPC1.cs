@@ -9,12 +9,13 @@ public class NPC1 : MonoBehaviour
     private bool hasTurned180 = false;
     private Transform player;
     private float firstWalkDuration = 4.8f; // Duración del primer paseo
-    private float secondWalkDuration = 2.4f; // Duración del segundo paseo
-
+    public GameObject cubeCollider;
     void Start()
     {
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        cubeCollider.GetComponent<MeshRenderer>().enabled = false; // Deshabilita el Mesh Renderer al inicio
+
     }
 
     void Update()
@@ -89,6 +90,7 @@ public class NPC1 : MonoBehaviour
 
         // Desactiva la animación de caminata en el Animator
         animator.SetBool("isWalking", false);
+        cubeCollider.GetComponent<MeshRenderer>().enabled = true;
     }
 
     void ContinueWalking()
