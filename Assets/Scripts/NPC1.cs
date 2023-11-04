@@ -2,62 +2,63 @@ using UnityEngine;
 
 public class NPC1 : MonoBehaviour
 {
+    public DialogueSystem dialogueSystem;
+    public string npcName;
+    public string[] sentences;
     private Animator animator;
     private bool isWalking = false;
-    private bool hasStarted = false;
+    private bool hasStartedDialogue = false;
+    private bool hasStartedWalking = false;
+    private Transform player;
+    private float walkSpeed = 1.2f; // Velocidad de caminata de María
+    private float firstWalkDuration = 4.8f; // Duración del primer paseo
     private bool hasTurnedOnce = false;
     private bool hasTurned180 = false;
-    private Transform player;
-    private float firstWalkDuration = 4.8f; // Duración del primer paseo
-    private float secondWalkDuration = 2.4f; // Duración del segundo paseo
 
     void Start()
     {
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        dialogueSystem.OnDialogueComplete += StartWalking; // Suscribe al evento del sistema de diálogo
+    }
+
+    void OnDestroy()
+    {
+        dialogueSystem.OnDialogueComplete -= StartWalking; // Desuscribe para evitar referencias nulas
     }
 
     void Update()
     {
-        float distance = Vector3.Distance(transform.position, player.position);
-
-        if (distance <= 1.6f && !hasStarted)
+        // Comprueba si el jugador está cerca y el diálogo aún no ha comenzado
+        if (Vector3.Distance(transform.position, player.position) <= 1.6f && !hasStartedDialogue)
         {
-            // Comienza la actividad del NPC
-            StartActivity();
+            hasStartedDialogue = true;
+            dialogueSystem.StartDialogue(npcName, sentences); // Inicia el diálogo
         }
 
+        // Actualiza el movimiento si María está caminando
         if (isWalking)
         {
-            // Mueve al NPC en el eje z (puede que necesites ajustar esto según la orientación de tu NPC)
-            transform.Translate(Vector3.forward * 1.2f * Time.deltaTime);
-
-            // Activa la animación de caminata en el Animator
-            animator.SetBool("isWalking", true);
+            // Aquí es donde María se moverá si la bandera isWalking es verdadera
+            transform.Translate(Vector3.forward * walkSpeed * Time.deltaTime);
         }
     }
 
-    void StartActivity()
+    // Este método se llama cuando el evento OnDialogueComplete es disparado
+    void StartWalking()
     {
-        if (!hasStarted)
+        if (!hasStartedWalking)
         {
-            // Gira 90 grados a la derecha
             transform.Rotate(0, 90, 0);
-            Debug.Log("Comenzando a caminar...");
-
-            // Indica que el NPC está caminando
-            isWalking = true;
-
-            // Invoca la parada del movimiento después de firstWalkDuration segundos
+            hasStartedWalking = true;
+            animator.SetBool("isWalking", true); // Activa la animación de caminata
+            isWalking = true; // Permite que el NPC se mueva en Update
+            // Puedes agregar aquí cualquier inicialización adicional para el movimiento o comportamiento de María
             Invoke("TurnRight", firstWalkDuration / 2);
             Invoke("StopWalking", firstWalkDuration / 2 + 1);
-            Invoke("TurnRight", firstWalkDuration /2 + 1);
-            Invoke("Turn180", firstWalkDuration/2  + 1);
-            Invoke("StopWalking", firstWalkDuration/2 + 1);
-
-
-            // Actualiza la bandera de hasStarted
-            hasStarted = true;
+            Invoke("TurnRight", firstWalkDuration / 2 + 1);
+            Invoke("Turn180", firstWalkDuration / 2 + 1);
+            Invoke("StopWalking", firstWalkDuration / 2 + 1);
         }
     }
 
@@ -96,4 +97,5 @@ public class NPC1 : MonoBehaviour
         isWalking = true;
         Debug.Log("Continuando caminata...");
     }
+    // Puedes agregar aquí métodos adicionales para girar o detener a María según sea necesario
 }
