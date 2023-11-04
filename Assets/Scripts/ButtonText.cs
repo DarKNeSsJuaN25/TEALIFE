@@ -1,17 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+using UnityEngine.SceneManagement;
 
 public class ButtonText : MonoBehaviour
 {
-    // Start is called before the first frame update
-
-    public TextMeshProUGUI textMeshPro;
-
-    public void SetButtom(string textMeshPro2)
+    public void StartBtn()
     {
-        textMeshPro.text = textMeshPro2;
+        SceneManager.LoadScene("MainMenu");
     }
 }
