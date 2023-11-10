@@ -6,6 +6,8 @@ public class ImageInteraction : MonoBehaviour
     private Transform player;
     public string npcName;
     public string[] sentences;
+    public GameObject invisibleCube;
+    private bool hasStartedDialogue = false;
 
     void Start()
     {
@@ -14,9 +16,19 @@ public class ImageInteraction : MonoBehaviour
 
     void Update()
     {
-        if(Vector3.Distance(transform.position, player.position) <= 1.3f)
+        if(Vector3.Distance(transform.position, player.position) <= 1.3f && !hasStartedDialogue)
         {
+            hasStartedDialogue = true;
+            NPC2.hasActivatedImage = true;
+            Debug.Log("Activando NPC2");
+
             dialogueSystem.StartDialogue(npcName, sentences);
+            if(invisibleCube != null){
+                BoxCollider cubeRender = invisibleCube.GetComponent<BoxCollider>();
+                if(cubeRender != null){
+                    cubeRender.enabled = false;
+                }
+            }
         }
     }
 }

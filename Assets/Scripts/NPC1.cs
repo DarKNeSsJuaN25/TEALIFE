@@ -22,10 +22,7 @@ public class NPC1 : MonoBehaviour
         dialogueSystem.OnDialogueComplete += StartWalking; // Suscribe al evento del sistema de diálogo
     }
 
-    void OnDestroy()
-    {
-        dialogueSystem.OnDialogueComplete -= StartWalking; // Desuscribe para evitar referencias nulas
-    }
+
 
     void Update()
     {
