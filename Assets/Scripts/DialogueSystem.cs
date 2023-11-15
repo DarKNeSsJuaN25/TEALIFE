@@ -2,14 +2,14 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
-using System; // Asegúrate de incluir este espacio de nombres para usar eventos
+using System;
 
 public class DialogueSystem : MonoBehaviour
 {
     public TextMeshProUGUI dialogueText;
     public TextMeshProUGUI nameText;
     public GameObject dialoguePanel;
-    public event Action OnDialogueComplete; // Evento para notificar cuando el diálogo esté completo
+    public event Action OnDialogueComplete;
 
     private Queue<string> sentences;
 
@@ -72,6 +72,6 @@ public class DialogueSystem : MonoBehaviour
     {
         dialoguePanel.SetActive(false);
         IsDialogueActive = false;
-        OnDialogueComplete?.Invoke(); // Dispara el evento cuando el diálogo termina
+        OnDialogueComplete?.Invoke();
     }
 }
