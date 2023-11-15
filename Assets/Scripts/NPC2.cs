@@ -41,6 +41,7 @@ public class NPC2 : MonoBehaviour
             // Aquí es donde María se moverá si la bandera isWalking es verdadera
             transform.Translate(Vector3.forward * walkSpeed * Time.deltaTime);
         }
+
     }
 
     // Este método se llama cuando el evento OnDialogueComplete es disparado
@@ -52,7 +53,8 @@ public class NPC2 : MonoBehaviour
             hasStartedWalking = true;
             isWalking = true; // Permite que el NPC se mueva en Update
             // Puedes agregar aquí cualquier inicialización adicional para el movimiento o comportamiento de María
-            Invoke("StopWalking", firstWalkDuration / 2 + 2);
+            Invoke("StopWalking", firstWalkDuration / 2 + 5);
+            Invoke("Turn180",firstWalkDuration /2 + 5);
         }
     }
 

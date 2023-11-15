@@ -20,7 +20,6 @@ public class ImageInteraction : MonoBehaviour
         {
             hasStartedDialogue = true;
             NPC2.hasActivatedImage = true;
-
             dialogueSystem.StartDialogue(npcName, sentences);
             if (invisibleCube != null)
             {
