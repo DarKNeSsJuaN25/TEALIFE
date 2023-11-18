@@ -53,8 +53,8 @@ public class NPC2 : MonoBehaviour
             hasStartedWalking = true;
             isWalking = true; // Permite que el NPC se mueva en Update
             // Puedes agregar aquí cualquier inicialización adicional para el movimiento o comportamiento de María
-            Invoke("StopWalking", firstWalkDuration / 2 + 5);
-            Invoke("Turn180",firstWalkDuration /2 + 5);
+            Invoke("StopWalking", firstWalkDuration / 2 + 7);
+            Invoke("Turn180", firstWalkDuration / 2 + 7);
         }
     }
 
@@ -93,5 +93,5 @@ public class NPC2 : MonoBehaviour
         isWalking = true;
         Debug.Log("Continuando caminata...");
     }
-    // Puedes agregar aquí métodos adicionales para girar o detener a María según sea necesario
+    // Puedes agregar aquí métodos adicionales para girar o de
 }

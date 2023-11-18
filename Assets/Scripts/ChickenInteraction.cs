@@ -8,9 +8,11 @@ public class ChickenInteraction : MonoBehaviour
     public string[] sentences;
     public GameObject pollo;
     private bool hasStartedDialogue = false;
+    AudioSource audio;
     
     void Start()
     {
+        audio = GetComponent<AudioSource>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
@@ -18,6 +20,7 @@ public class ChickenInteraction : MonoBehaviour
     {
         if (Vector3.Distance(transform.position, player.position) <= 1.3f && !hasStartedDialogue)
         {
+            audio.Play();
             NPC3.comida = true;
             hasStartedDialogue = true;
             dialogueSystem.StartDialogue(npcName, sentences);
