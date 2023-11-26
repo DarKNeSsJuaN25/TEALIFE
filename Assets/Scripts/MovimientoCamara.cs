@@ -5,11 +5,12 @@ public class MovimientoCamara : MonoBehaviour
 {
     private Transform player;
     private PlayerMovement playerMovement;
-    private Vector3 initialPosition; // Para almacenar la posición inicial
-    private bool isTriggered = false; // Para saber si el jugador está en el trigger
-
+    private Vector3 initialPosition; // Para almacenar la posiciï¿½n inicial
+    private bool isTriggered = false; // Para saber si el jugador estï¿½ en el trigger
+    AudioSource audio;
     void Start()
     {
+        audio = GetComponent<AudioSource>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         playerMovement = player.GetComponent<PlayerMovement>();
     }
@@ -18,11 +19,13 @@ public class MovimientoCamara : MonoBehaviour
     {
         if (other.transform == player)
         {
-            initialPosition = player.position; // Guarda la posición inicial
+            initialPosition = player.position; // Guarda la posiciï¿½n inicial
             isTriggered = true;
             if (playerMovement != null)
             {
                 playerMovement.SetMovement(false);
+                audio.Play();
+                NPC5.isNPCsat = true;
             }
             player.Rotate(0, 180, 0);
         }
@@ -43,12 +46,12 @@ public class MovimientoCamara : MonoBehaviour
 
     void Update()
     {
-        // Verifica si el jugador presiona la tecla "T" y está en el trigger
+        // Verifica si el jugador presiona la tecla "T" y estï¿½ en el trigger
         if (isTriggered && Input.GetKeyDown(KeyCode.T))
         {
-            Vector3 moveBackPosition = initialPosition  + player.forward; // Calcula la nueva posición
-            player.position = moveBackPosition; // Mueve al jugador de vuelta a la posición calculada
-            isTriggered = false; // Opcional: desactivar el trigger después de regresar
+            Vector3 moveBackPosition = initialPosition  + player.forward; // Calcula la nueva posiciï¿½n
+            player.position = moveBackPosition; // Mueve al jugador de vuelta a la posiciï¿½n calculada
+            isTriggered = false; // Opcional: desactivar el trigger despuï¿½s de regresar
         }
     }
 }
