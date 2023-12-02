@@ -3,8 +3,6 @@ using UnityEngine;
 public class NPC2 : MonoBehaviour
 {
     public DialogueSystem dialogueSystem;
-    public string npcName;
-    public string[] sentences;
     private Animator animator;
     private bool isWalking = false;
     private bool hasStartedDialogue = false;
@@ -15,11 +13,16 @@ public class NPC2 : MonoBehaviour
     private bool hasTurnedOnce = false;
     private bool hasTurned180 = false;
     public static bool hasActivatedImage = false;
+    AudioSource[] audioSources;
+    AudioSource audio;
+    private OVRPlayerController movement;
+
     void Start()
     {
         animator = GetComponent<Animator>();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        dialogueSystem.OnDialogueComplete += StartWalking; // Suscribe al evento del sistema de diálogo
+        player = FindObjectOfType<OVRPlayerController>().transform;
+        movement = FindObjectOfType<OVRPlayerController>();
+        audioSources = GetComponents<AudioSource>();
     }
 
 
@@ -29,8 +32,21 @@ public class NPC2 : MonoBehaviour
         // Comprueba si el jugador está cerca y el diálogo aún no ha comenzado
         if (Vector3.Distance(transform.position, player.position) <= 1.6f && !hasStartedDialogue && hasActivatedImage)
         {
+            Invoke("StartWalking", 8);
             hasStartedDialogue = true;
-            dialogueSystem.StartDialogue(npcName, sentences); // Inicia el diálogo
+            foreach (var source in audioSources)
+            {
+                if (source.clip != null && source.clip.name == "mucama2")
+                {
+                    audio = source;
+                    audio.Play();
+
+                    // Suponiendo que tienes una referencia al OVRPlayerController llamada 'playerController'
+                    movement.EnableMovement(false); // Desactiva el movimiento y la rotación
+
+                    break; // Rompe el ciclo una vez que encuentres el AudioSource correcto
+                }
+            }
         }
 
         // Actualiza el movimiento si María está caminando
@@ -49,6 +65,20 @@ public class NPC2 : MonoBehaviour
     {
         if (!hasStartedWalking && hasActivatedImage)
         {
+            foreach (var source in audioSources)
+            {
+                if (source.clip != null && source.clip.name == "externo3")
+                {
+                    audio = source;
+                    audio.Play();
+
+                    // Suponiendo que tienes una referencia al OVRPlayerController llamada 'playerController'
+                    movement.EnableMovement(false); // Desactiva el movimiento y la rotación
+
+                    break; // Rompe el ciclo una vez que encuentres el AudioSource correcto
+                }
+            }
+            movement.EnableMovement(true);
             transform.Rotate(0, 180, 0);
             hasStartedWalking = true;
             isWalking = true; // Permite que el NPC se mueva en Update
@@ -86,6 +116,7 @@ public class NPC2 : MonoBehaviour
 
         // Desactiva la animación de caminata en el Animator
         animator.SetBool("isWalking", false);
+        NPC3.np2finished = true;
     }
 
     void ContinueWalking()

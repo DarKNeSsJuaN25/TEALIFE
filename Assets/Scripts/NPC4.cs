@@ -1,3 +1,4 @@
+using Oculus.Interaction;
 using UnityEngine;
 
 public class NPC4 : MonoBehaviour
@@ -15,6 +16,7 @@ public class NPC4 : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
+
     }
 
 

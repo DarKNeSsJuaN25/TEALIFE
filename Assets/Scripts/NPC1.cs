@@ -9,36 +9,51 @@ public class NPC1 : MonoBehaviour
     private bool isWalking = false;
     private bool hasStartedDialogue = false;
     private bool hasStartedWalking = false;
-    private Transform player;
-    private float walkSpeed = 1.2f; // Velocidad de caminata de María
+    private Transform player; // Referencia al transform del jugador VR
+    private OVRPlayerController movement;
+    private float walkSpeed = 1.2f; // Velocidad de caminata
     private float firstWalkDuration = 4.8f; // Duración del primer paseo
     private bool hasTurnedOnce = false;
     private bool hasTurned180 = false;
-
+    AudioSource[] audioSources;
+    AudioSource audio;
     void Start()
     {
         animator = GetComponent<Animator>();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        dialogueSystem.OnDialogueComplete += StartWalking; // Suscribe al evento del sistema de diálogo
+        // Obtiene la referencia al jugador VR
+        player = FindObjectOfType<OVRPlayerController>().transform;
+        movement = FindObjectOfType<OVRPlayerController>();
+        audioSources = GetComponents<AudioSource>();
+        //Cuando el audio termina, llamar a la funcion StartWalking()
     }
-
-
 
     void Update()
     {
         // Comprueba si el jugador está cerca y el diálogo aún no ha comenzado
         if (Vector3.Distance(transform.position, player.position) <= 1.6f && !hasStartedDialogue)
         {
+            Invoke("StartWalking", 8);
             hasStartedDialogue = true;
-            dialogueSystem.StartDialogue(npcName, sentences); // Inicia el diálogo
+            foreach (var source in audioSources)
+            {
+                if (source.clip != null && source.clip.name == "mucama")
+                {
+                    audio = source;
+                    audio.Play();
+
+                    // Suponiendo que tienes una referencia al OVRPlayerController llamada 'playerController'
+                    movement.EnableMovement(false); // Desactiva el movimiento y la rotación
+
+                    break; // Rompe el ciclo una vez que encuentres el AudioSource correcto
+                }
+            }
         }
 
         // Actualiza el movimiento si María está caminando
         if (isWalking)
         {
+            movement.EnableMovement(true);
             animator.SetBool("isWalking", true); // Activa la animación de caminata
-
-            // Aquí es donde María se moverá si la bandera isWalking es verdadera
             transform.Translate(Vector3.forward * walkSpeed * Time.deltaTime);
         }
     }
@@ -48,10 +63,22 @@ public class NPC1 : MonoBehaviour
     {
         if (!hasStartedWalking)
         {
+            foreach (var source in audioSources)
+            {
+                if (source.clip != null && source.clip.name == "externo2")
+                {
+                    audio = source;
+                    audio.Play();
+
+                    // Suponiendo que tienes una referencia al OVRPlayerController llamada 'playerController'
+                    movement.EnableMovement(false); // Desactiva el movimiento y la rotación
+
+                    break; // Rompe el ciclo una vez que encuentres el AudioSource correcto
+                }
+            }
             transform.Rotate(0, 90, 0);
             hasStartedWalking = true;
             isWalking = true; // Permite que el NPC se mueva en Update
-            // Puedes agregar aquí cualquier inicialización adicional para el movimiento o comportamiento de María
             Invoke("TurnRight", firstWalkDuration / 2);
             Invoke("StopWalking", firstWalkDuration / 2 + 1);
             Invoke("TurnRight", firstWalkDuration / 2 + 1);
@@ -82,11 +109,8 @@ public class NPC1 : MonoBehaviour
 
     void StopWalking()
     {
-        // Detiene el movimiento
         isWalking = false;
         Debug.Log("Deteniendo el caminar...");
-
-        // Desactiva la animación de caminata en el Animator
         animator.SetBool("isWalking", false);
     }
 
@@ -95,5 +119,4 @@ public class NPC1 : MonoBehaviour
         isWalking = true;
         Debug.Log("Continuando caminata...");
     }
-    // Puedes agregar aquí métodos adicionales para girar o detener a María según sea necesario
 }

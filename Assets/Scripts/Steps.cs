@@ -5,12 +5,28 @@ using UnityEngine;
 public class Steps : MonoBehaviour
 {
     public AudioSource footstepsSound;
-    void Update(){
-        if(Input.GetKey(KeyCode.W) || (Input.GetKey(KeyCode.S)) || (Input.GetKey(KeyCode.D)) || (Input.GetKey(KeyCode.A))){
-            footstepsSound.enabled = true;
+    private  OVRPlayerController movement;
+
+    private void Start()
+    {
+        movement = GetComponent<OVRPlayerController>();
+    }
+    void Update()
+    {
+        // Obtén el input del joystick del controlador de Oculus
+        Vector2 primaryThumbstick = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
+
+        // Revisa si hay movimiento significativo en el joystick
+        if (primaryThumbstick.magnitude > 0.1f)
+        {
+            if (!footstepsSound.isPlaying && movement.isEnabledMovement()) // Verifica si el sonido no se está reproduciendo actualmente
+            {
+                footstepsSound.Play(); // Reproduce el sonido de pasos
+            }
         }
-        else{
-            footstepsSound.enabled = false;
+        else
+        {
+            footstepsSound.Stop(); // Detiene el sonido de pasos
         }
     }
 }

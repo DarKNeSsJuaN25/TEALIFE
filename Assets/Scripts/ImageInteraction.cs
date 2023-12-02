@@ -2,25 +2,28 @@ using UnityEngine;
 
 public class ImageInteraction : MonoBehaviour
 {
-    public DialogueSystem dialogueSystem;
+    AudioSource audio;
     private Transform player;
-    public string npcName;
-    public string[] sentences;
     public GameObject invisibleCube;
     private bool hasStartedDialogue = false;
-    
+    private OVRPlayerController movement;
+
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        player = FindObjectOfType<OVRPlayerController>().transform;
+        audio = GetComponent<AudioSource>();
+        movement = FindObjectOfType<OVRPlayerController>();
     }
 
     void Update()
     {
         if (Vector3.Distance(transform.position, player.position) <= 1.3f && !hasStartedDialogue)
         {
+            movement.EnableMovement(false);
+            Invoke("desbloquear", 10);
             hasStartedDialogue = true;
+            audio.Play();
             NPC2.hasActivatedImage = true;
-            dialogueSystem.StartDialogue(npcName, sentences);
             if (invisibleCube != null)
             {
                 BoxCollider cubeRender = invisibleCube.GetComponent<BoxCollider>();
@@ -30,5 +33,9 @@ public class ImageInteraction : MonoBehaviour
                 }
             }
         }
+    }
+    void desbloquear()
+    {
+        movement.EnableMovement(true);
     }
 }

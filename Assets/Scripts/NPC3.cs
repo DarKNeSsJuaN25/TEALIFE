@@ -17,15 +17,16 @@ public class NPC3 : MonoBehaviour
     private bool hasTurned180 = false;
     public static bool comida = false;
     private bool isNPC3DialogueActive = false;
-    public TextMeshPro dialogueOne;
-    public TextMeshPro dialogueTwo;
+    public static bool np2finished = false;
+    AudioSource[] audioSources;
+    AudioSource audio;
+    private OVRPlayerController movement;
     void Start()
     {
         animator = GetComponent<Animator>();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        dialogueSystem.OnDialogueComplete += StartWalking; // Suscribe al evento del sistema de diálogo
-        dialogueOne.enabled = false;
-        dialogueTwo.enabled = false;
+        player = FindObjectOfType<OVRPlayerController>().transform;
+        movement = FindObjectOfType<OVRPlayerController>();
+        audioSources = GetComponents<AudioSource>();
     }
 
 
@@ -33,12 +34,25 @@ public class NPC3 : MonoBehaviour
     void Update()
     {
         // Comprueba si el jugador está cerca y el diálogo aún no ha comenzado
-        if (Vector3.Distance(transform.position, player.position) <= 1.6f && !hasStartedDialogue && comida)
+        if (Vector3.Distance(transform.position, player.position) <= 1.6f && !hasStartedDialogue && comida && np2finished)
         {
-            Debug.Log("Aqui");
+            Invoke("StartWalking", 9);
             isNPC3DialogueActive = true;
             hasStartedDialogue = true;
-            dialogueSystem.StartDialogue(npcName, sentences); // Inicia el diálogo
+            NPC5.hastalked = true;
+            foreach (var source in audioSources)
+            {
+                if (source.clip != null && source.clip.name == "mucama3")
+                {
+                    audio = source;
+                    audio.Play();
+
+                    // Suponiendo que tienes una referencia al OVRPlayerController llamada 'playerController'
+                    movement.EnableMovement(false); // Desactiva el movimiento y la rotación
+
+                    break; // Rompe el ciclo una vez que encuentres el AudioSource correcto
+                }
+            }
         }
 
         // Actualiza el movimiento si María está caminando
@@ -57,12 +71,24 @@ public class NPC3 : MonoBehaviour
     {
         if (!hasStartedWalking && comida && isNPC3DialogueActive)
         {
+            foreach (var source in audioSources)
+            {
+                if (source.clip != null && source.clip.name == "externo4")
+                {
+                    audio = source;
+                    audio.Play();
+
+                    // Suponiendo que tienes una referencia al OVRPlayerController llamada 'playerController'
+                    movement.EnableMovement(false); // Desactiva el movimiento y la rotación
+
+                    break; // Rompe el ciclo una vez que encuentres el AudioSource correcto
+                }
+            }
+            movement.EnableMovement(true);
             transform.Rotate(0, 90, 0);
             hasStartedWalking = true;
             isWalking = true; // Permite que el NPC se mueva en Update
             // Puedes agregar aquí cualquier inicialización adicional para el movimiento o comportamiento de María
-            dialogueOne.enabled = true;
-            dialogueTwo.enabled = true;
             Invoke("StopWalking", firstWalkDuration / 2);
             Invoke("Turn180", firstWalkDuration / 2 );
         }

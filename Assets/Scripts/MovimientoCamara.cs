@@ -1,57 +1,48 @@
-using SojaExiles;
 using UnityEngine;
 
 public class MovimientoCamara : MonoBehaviour
 {
-    private Transform player;
-    private PlayerMovement playerMovement;
-    private Vector3 initialPosition; // Para almacenar la posici�n inicial
-    private bool isTriggered = false; // Para saber si el jugador est� en el trigger
-    AudioSource audio;
+    private OVRPlayerController playerController; // Referencia al OVRPlayerController
+    private bool isTriggered = false;
+
     void Start()
     {
-        audio = GetComponent<AudioSource>();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        playerMovement = player.GetComponent<PlayerMovement>();
+        playerController = FindObjectOfType<OVRPlayerController>();
+        // Asegúrate de que el componente OVRPlayerController está en el objeto correcto.
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.transform == player)
+        if (other.gameObject == playerController.gameObject)
         {
-            initialPosition = player.position; // Guarda la posici�n inicial
             isTriggered = true;
-            if (playerMovement != null)
-            {
-                playerMovement.SetMovement(false);
-                audio.Play();
-                NPC5.isNPCsat = true;
-            }
-            player.Rotate(0, 180, 0);
+            playerController.EnableMovement(false);
+            // Suponiendo que NPC5 es una clase que maneja el estado de los NPC
+            NPC5.isNPCsat = true;
+            playerController.transform.Rotate(0, 180, 0); // Rota al jugador
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.transform == player)
+        if (other.gameObject == playerController.gameObject)
         {
             isTriggered = false;
-            if (playerMovement != null)
-            {
-                playerMovement.SetMovement(true);
-            }
             // INICIAR CONVERSACION AQUI Y PONER UN BOOL PARA QUE SE PUEDA MOVER CUANDO TERMINE LA CONVERSACION
         }
     }
 
     void Update()
     {
-        // Verifica si el jugador presiona la tecla "T" y est� en el trigger
-        if (isTriggered && Input.GetKeyDown(KeyCode.T))
+        // En VR, debes usar los botones del controlador en lugar de KeyCode.T
+        // Podrías usar algo así como OVRInput.GetDown(OVRInput.Button.One) para detectar un botón específico del controlador de Oculus.
+        if (isTriggered && OVRInput.GetDown(OVRInput.Button.Two))
         {
-            Vector3 moveBackPosition = initialPosition  + player.forward; // Calcula la nueva posici�n
-            player.position = moveBackPosition; // Mueve al jugador de vuelta a la posici�n calculada
-            isTriggered = false; // Opcional: desactivar el trigger despu�s de regresar
+            NPC5.isNPCsat = false;
+            playerController.EnableMovement(true);
+            // Mueve al jugador hacia atrás o realiza la acción deseada
+            playerController.transform.position += playerController.transform.forward; // Este es un ejemplo simple, probablemente querrás suavizar esto.
+            isTriggered = false;
         }
     }
 }

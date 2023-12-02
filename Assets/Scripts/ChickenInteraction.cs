@@ -2,32 +2,36 @@ using UnityEngine;
 
 public class ChickenInteraction : MonoBehaviour
 {
-    public DialogueSystem dialogueSystem;
     private Transform player;
-    public string npcName;
-    public string[] sentences;
     public GameObject pollo;
     private bool hasStartedDialogue = false;
     AudioSource audio;
-    
+    private OVRPlayerController movement;
     void Start()
     {
         audio = GetComponent<AudioSource>();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        player = FindObjectOfType<OVRPlayerController>().transform;
+        movement = FindObjectOfType<OVRPlayerController>();
     }
 
     void Update()
     {
         if (Vector3.Distance(transform.position, player.position) <= 1.3f && !hasStartedDialogue)
         {
+            movement.EnableMovement(false);
             audio.Play();
             NPC3.comida = true;
+            NPC5.hasEaten = true;
             hasStartedDialogue = true;
-            dialogueSystem.StartDialogue(npcName, sentences);
             DisableChicken();
+            Invoke("enableChicken", 3);
+
         }
     }
-
+    private void enableChicken()
+    {
+        movement.EnableMovement(true);
+    }
     private void DisableChicken()
     {
         Debug.Log("Aqui");
